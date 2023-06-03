@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chapter7.databinding.ItemBinding
 
-class WordAdapter(private val list: MutableList<Word>) : RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
+class WordAdapter(
+    private val list: MutableList<Word>,
+    private  val itemClickListener: ItemClickListener? = null,
+) : RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
 
 
 
@@ -17,21 +20,27 @@ class WordAdapter(private val list: MutableList<Word>) : RecyclerView.Adapter<Wo
         return  WordViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
+    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+        holder.bind(list[position])
+
+
+    }
+
+    override fun getItemCount() : Int {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.binding.apply {
-            val word = list[position]
-            textTextView.text = word.text
-            meanTextView.text = word.mean
-            typeChip.text = word.type
+    class WordViewHolder(private val binding: ItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(word: Word) {
+            binding.apply {
+                textTextView.text = word.text
+                meanTextView.text = word.meand
+                typeChip.text = word.typed
+            }
         }
-
+    }
+    interface  ItemClickListener {
+        fun onClick(word:Word)
     }
 
-    class WordViewHolder(val binding: ItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
-    }
 }

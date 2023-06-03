@@ -2,6 +2,7 @@ package com.example.chapter7
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chapter7.databinding.ActivityAddBinding
 import com.example.chapter7.databinding.ActivityMainBinding
@@ -20,15 +21,14 @@ class MainActivity : AppCompatActivity() {
             Word("honey","꿀","명사"),
             Word("run","실행하다","동사",),
 
-
-
         )
 
         wordAdapter = WordAdapter(dummyList)
         binding.wordRecyclerView.apply {
             adapter = wordAdapter
-            layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager)
-
+            layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+            val dividerItemDecoration = DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL)
+            addItemDecoration(dividerItemDecoration)
         }
     }
 }
