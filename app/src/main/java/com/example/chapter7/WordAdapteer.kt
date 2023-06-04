@@ -21,8 +21,9 @@ class WordAdapter(
     }
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.bind(list[position])
-
+        val word = list[position]
+        holder.bind(word)
+        holder.itemView.setOnClickListener{itemClickListener?.onClick()}
 
     }
 
@@ -34,8 +35,11 @@ class WordAdapter(
         fun bind(word: Word) {
             binding.apply {
                 textTextView.text = word.text
-                meanTextView.text = word.meand
-                typeChip.text = word.typed
+                meanTextView.text = word.mean
+                typeChip.text = word.type
+            }
+            itemView.setOnClickListener {
+
             }
         }
     }
