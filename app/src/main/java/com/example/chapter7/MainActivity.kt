@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
             layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
             val dividerItemDecoration = DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL)
             addItemDecoration(dividerItemDecoration)
-        }
+        }rrrr
         Thread {
             val list = AppDatabase.getInstance(this)?.wordDao()?.getAll()
             Thread.sleep(1000)
