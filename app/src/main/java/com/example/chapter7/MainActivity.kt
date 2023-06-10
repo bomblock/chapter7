@@ -47,4 +47,4 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
     override fun onClick(word: Word) {
         Toast.makeText(this, "${word.text} 가 클릭되었습니다. ", Toast.LENGTH_SHORT).show()
     }
-}rrr
+}
