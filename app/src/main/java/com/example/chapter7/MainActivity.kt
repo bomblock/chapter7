@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
             layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
             val dividerItemDecoration = DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL)
             addItemDecoration(dividerItemDecoration)
-        }rrrr
+        }
         Thread {
             val list = AppDatabase.getInstance(this)?.wordDao()?.getAll()
             Thread.sleep(1000)
@@ -47,4 +47,4 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
     override fun onClick(word: Word) {
         Toast.makeText(this, "${word.text} 가 클릭되었습니다. ", Toast.LENGTH_SHORT).show()
     }
-}
+}rrr
