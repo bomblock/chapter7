@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chapter7.databinding.ActivityAddBinding
@@ -12,6 +13,17 @@ import com.example.chapter7.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter:WordAdapter
+    private var selectedWord:Word? = null
+    private val updateAddWordResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if(result.resultCode == RESULT_OK  && isUpdated ) {
+            val isUpdated = result.data?.getBooleanExtra("isUpdated", false) ?:false
+            if(isUpdated) {                updateAddWord
+
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -20,8 +32,12 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
         initRecyclerView()
         binding.addButton.setOnClickListener {
             Intent(this, AddActivity::class.java).let {
-                startActivity(it)
+                updateAddWordResult.launch(it)
             }
+        }
+
+        binding.deleteImageView.setOnClickListener {
+            delete()
         }
     }
 
@@ -39,12 +55,38 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
         }
         Thread {
             val list = AppDatabase.getInstance(this)?.wordDao()?.getAll()
-            Thread.sleep(1000)
             wordAdapter.list.addAll(list)
-            runOnUiThread{wordAdapter.notifyDataSetChanged()}
+            runOnUiThread{ wordAdapter.notifyDataSetChanged() }
+        }.start()
+    }
+
+    private fun updateAddWord() {
+        Thread {
+            val word = AppDatabase.getInstance(this)?.wordDao()?.getLatestWord()?.let { word ->
+                wordAdapter.list.add(0, word)
+                runOnUiThread { wordAdapter.notifyDataSetChanged() }
+            }
+        }.start()
+    }
+    private  fun delete() {
+        if(selectedWord == null) return
+
+        Thread {
+            selectedWord?.let { word ->
+                AppDatabase.getInstance(this)?.wordDao()?.delete(word)
+                runOnUiThread {
+                    wordAdapter.list.remove(word)
+                    wordAdapter.notifyDataSetChanged()
+                    binding.textTextView.text = ""
+                    binding.meanTextView.text = ""
+                    Toast.makeText(this, "삭제가 완료되었습니다.")
+                }
+            }
         }.start()
     }
     override fun onClick(word: Word) {
-        Toast.makeText(this, "${word.text} 가 클릭되었습니다. ", Toast.LENGTH_SHORT).show()
+        selectedWord = word
+        binding.textTextView.text = word.text
+        binding.meanTextView.text = word.mean
     }
 }
