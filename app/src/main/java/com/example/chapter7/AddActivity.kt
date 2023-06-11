@@ -55,5 +55,5 @@ class AddActivity : AppCompatActivity() {
             finish()
         }.start()
 
-    }
+    }gg
 }
