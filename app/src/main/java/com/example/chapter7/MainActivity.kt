@@ -17,11 +17,19 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if(result.resultCode == RESULT_OK  && isUpdated ) {
             val isUpdated = result.data?.getBooleanExtra("isUpdated", false) ?:false
-            if(isUpdated) {                updateAddWord
 
-            }
+            if(result.resultCode == RESULT_OK  && isUpdated ) {
+                updateAddWord()
+        }
+    }
+    private val updateEditWordResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val editWord = result.data?.getParcelableExtra<Word>("editWord") ?:null
+
+        if(result.resultCode == RESULT_OK  && editWord != null ) {
+            updateEditWord(editWord)
         }
     }
     override fun onCreate(savedInstanceState: Bundle?){
@@ -38,6 +46,10 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
 
         binding.deleteImageView.setOnClickListener {
             delete()
+        }
+
+        binding.editImageView.setOnClickListener {
+            edit()
         }
     }
 
@@ -62,11 +74,18 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
 
     private fun updateAddWord() {
         Thread {
-            val word = AppDatabase.getInstance(this)?.wordDao()?.getLatestWord()?.let { word ->
+            AppDatabase.getInstance(this)?.wordDao()?.getLatestWord()?.let { word ->
                 wordAdapter.list.add(0, word)
                 runOnUiThread { wordAdapter.notifyDataSetChanged() }
             }
         }.start()
+    }
+
+    private fun updateEditWord(Word :Word) {
+        val index = wordAdapter.list.indexOfFirst { it.id == word.id }
+        wordAdapter.list[index] = word
+        runOnUiThread{wordAdapter.notifyItemChanged(index)}
+
     }
     private  fun delete() {
         if(selectedWord == null) return
@@ -79,10 +98,19 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
                     wordAdapter.notifyDataSetChanged()
                     binding.textTextView.text = ""
                     binding.meanTextView.text = ""
-                    Toast.makeText(this, "삭제가 완료되었습니다.")
+                    Toast.makeText(this, "삭제가 완료되었습니다.", Toast.LENGTH_SHORT)
                 }
+                selectedWord = null
             }
         }.start()
+    }
+
+    private fun edit () {
+        if(selectedWord == null) return
+
+        val intent = Intent(this, AddActivity::class.java).putExtra("originData", selectedWord)
+        updateEditWordResult.launch(intent)
+
     }
     override fun onClick(word: Word) {
         selectedWord = word
