@@ -63,14 +63,14 @@ class AddActivity : AppCompatActivity() {
             setResult(RESULT_OK, intent)
             finish()
         }.start()
-
+GG
     }
     private fun edit() {
         val text = binding.textInputEditText.text.toString()
         val mean = binding.meanTextInputEditText.text.toString()
         val type = findViewById<Chip>(binding.typeChipGroup.checkedChipId).text.toString()
         val editword = originWord?.copy(text = text,mean, type = type)
-fg
+
         Thread {
             editword?.let {  word->
                 AppDatabase.getInstance(this)?.wordDao()?.update(word)
