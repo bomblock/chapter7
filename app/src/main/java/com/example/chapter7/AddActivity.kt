@@ -63,7 +63,7 @@ class AddActivity : AppCompatActivity() {
             setResult(RESULT_OK, intent)
             finish()
         }.start()
-GG
+        fff
     }
     private fun edit() {
         val text = binding.textInputEditText.text.toString()
